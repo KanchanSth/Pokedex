@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pokedex/controllers/pokemon_controller.dart';
+import 'package:pokedex/controllers/pokemon.dart';
+
 import 'package:pokedex/views/pokemondetails_view.dart';
 
 class PokemonView extends StatelessWidget {
   PokemonView({Key? key}) : super(key: key);
 
-  PokemonController controller = Get.put(PokemonController());
+  Pokemon_Controller controller = Get.put(Pokemon_Controller());
 
   @override
   Widget build(BuildContext context) {
@@ -24,8 +25,8 @@ class PokemonView extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
 
-        var pokemonData = controller.pokemonListings;
-        var pokemonInfoData = controller.pokemonInfoListings;
+        var pokemonData = controller.pokemonList;
+        var pokemonInfoData = controller.pokemonDetials;
 
         return Padding(
           padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
@@ -35,26 +36,19 @@ class PokemonView extends StatelessWidget {
             itemCount: pokemonData.length,
             itemBuilder: (context, index) {
               var pokemon = pokemonData[index];
-
-              var pokemonType = '';
-
-              if (pokemonInfoData.length > index) {
-                pokemonType = pokemonInfoData[index].type.toString();
-              }
-
-              int pokemonId = pokemon.id;
-
-              var pokeFun = controller.fetchType(pokemonId);
               return GestureDetector(
                 onTap: () {
-                  //Get.to(() => PokemonDetails(id: pokemonId, url: pokemon,));
+                  Get.to(() => PokemonDetails(
+                        id: index + 1,
+                        url: pokemon.url,
+                      ));
                 },
                 child: Card(
                   child: GridTile(
                       child: Column(
                     children: [
-                      Image.network('${pokemon.imageUrl}'),
-                      Text(pokemon.name),
+                      Image.network('${pokemon.sprite!.image}'),
+                      Text('${pokemon.name}'),
                       const SizedBox(
                         height: 10,
                       ),
@@ -70,7 +64,7 @@ class PokemonView extends StatelessWidget {
                             width: 5,
                           ),
                           Text(
-                            pokemonType,
+                            pokemon.types.toString(),
                           ),
                         ],
                       ),
